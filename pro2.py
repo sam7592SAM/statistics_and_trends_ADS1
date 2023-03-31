@@ -25,11 +25,16 @@ def plot(data, kind, title,x,y):
 country_list = [19, 35, 43, 46, 49, 76, 87, 115, 129, 257]
 year = [33, 43, 53, 63]
 '''
-country_list = ["Spain", "United States", "United Kingdom", "China", "India", 
+country_names = ["Spain", "United States", "United Kingdom", "China", "India", 
                 "Brazil", "Congo, Dem. Rep.", "Australia", "Switzerland",
                 "Cambodia"]
+
 year = ['1990', '1995', '2000', '2005', '2010', '2015', '2020']
 '''
+
+country_names = ["Australia", "Brazil", "Switzerland", "China", 
+                 "Congo, Dem. Rep.", "Spain", "United Kingdom", "India",
+                 "Switzerland", "Cambodia"]
 
 
 #reading values by calling functions
@@ -42,7 +47,9 @@ agrlnd_1, agrlnd_2 = read_data("API_AG.LND.AGRI.ZS_DS2_en_csv_v2_5349988.csv",
 aralnd_1, aralnd_2 = read_data("API_AG.LND.ARBL.ZS_DS2_en_csv_v2_5346580.csv", 
                                country_list, year)
 
+forest_2.columns=country_names
+#forest_2.to_csv("forest.csv")
 plot(forest_2, 'bar', 'Forest Area (sq.km)', 'Years', 'No(in millions)')
-plot(poptot_2, 'bar', 'Population, Total', 'Years', 'No(in millions)')
-plot(agrlnd_2, 'line', 'Population, Total', 'Years', 'No(in millions)')
-plot(aralnd_2, 'line', 'Population, Total', 'Years', 'No(in millions)')
+#plot(poptot_2, 'bar', 'Population, Total', 'Years', 'No(in millions)')
+#plot(agrlnd_2, 'line', 'Population, Total', 'Years', 'No(in millions)')
+#plot(aralnd_2, 'line', 'Population, Total', 'Years', 'No(in millions)')
