@@ -60,7 +60,7 @@ def plot(data, kind, title, x, y):
     plt.title(title)
     plt.xlabel(x)
     plt.ylabel(y)
-    plt.legend(loc='upper right')
+    plt.legend(loc='upper right', bbox_to_anchor = (1.4, 1.0))
     plt.show()
 
 
