@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import scipy.stats as sts
+import seaborn as sns
 
 # Defining Functions
 
@@ -25,6 +26,7 @@ def read_data(data, country, years):
     df2 = df1.T
     return df1, df2
 
+
 # 2. Function to give an overview of the dataframe
 
 
@@ -35,7 +37,9 @@ def des_fun(data):
     value distribution. .corr() method is used to check the pairwise
     correlation of columns'''
     print(data.describe())
-    print(data.corr())
+    # print(data.corr())
+    return
+
 
 # 3. Function using statistical calculations.
 
@@ -46,6 +50,8 @@ def stat_fun(data):
     Argument data is passed here.'''
     print("Skewness: ", sts.skew(data))
     print("Kurtosis: ", sts.kurtosis(data))
+    return
+
 
 # 4. Function to plot
 
@@ -60,9 +66,27 @@ def plot(data, kind, title, x, y):
     plt.title(title)
     plt.xlabel(x)
     plt.ylabel(y)
-    plt.legend(loc='upper right', bbox_to_anchor = (1.4, 1.0))
+    plt.legend(loc='upper right', bbox_to_anchor=(1.4, 1.0))
     plt.show()
 
+
+def heatdata(data, column, value, year, indi_cators):
+    df3 = data.groupby(column, group_keys=True)
+    df3 = df3.get_group(value)
+    df3 = df3.reset_index()
+    df3.set_index('Indicator Name', inplace=True)
+    df3 = df3.loc[:, year]
+    df3 = df3.transpose()
+    df3 = df3.loc[:, indi_cators]
+    df3 = df3.dropna(axis=1)
+    print(df3.head())
+    return df3
+
+
+def heat_map(data, country):
+    plt.figure(figsize=(10, 7))
+    heatmap = sns.heatmap(data.corr(), annot=True, cmap="YlGnBu")
+    heatmap.set_title(country)
 
 # Specifying the values to be taken from the datasets.
 
@@ -77,7 +101,7 @@ country_names = ["Australia", "Canada", "France", "Ecuador", "United States"]
 
 # Datasets called to the read_data(), specifying the country_list and year.
 
-forest_1, forest_2 = read_data("API_AG.LND.FRST.K2_DS2_en_csv_v2_5346556.csv",
+forest_1, forest_2 = read_data("API_AG.LND.FRST.ZS_DS2_en_csv_v2_5358376.csv",
                                country_list, year)
 poptot_1, poptot_2 = read_data("API_SP.POP.TOTL_DS2_en_csv_v2_5350834.csv",
                                country_list, year)
@@ -101,22 +125,28 @@ des_fun(aralnd_2)
 des_fun(poptot_2)
 des_fun(agrlnd_2)
 
-'''
-forest_2.to_csv("forest.csv")
-aralnd_2.to_csv("araland.csv")
-poptot_2.to_csv("poptot.csv")
-agrlnd_2.to_csv("agriland.csv")
-'''
 
 # Particular value of a dataframe being called to stat_fun().
 
-stat_fun(forest_2["Ecuador"])
+stat_fun(forest_2)
 
 # Plotting graphs for various dataframes using plot() and specifying arguements
 
-plot(forest_2, 'bar', 'Forest Area (sq.km)', 'Years', 'No(in millions)')
-plot(aralnd_2, 'bar', 'Arable Land (% of land area)', 'Years',
-     'Percentage(%)')
+plot(forest_2, 'bar', 'Forest Area (% of land area)', 'Years', 'Percentage(%)')
+plt.savefig("forestbar.png")
+plot(aralnd_2, 'bar', 'Arable Land (% of land area)', 'Years', 'Percentage(%)')
+plt.savefig("arablebar.png")
 plot(poptot_2, 'line', 'Population, Total', 'Years', 'No(in millions)')
+plt.savefig("poptotal.png")
 plot(agrlnd_2, 'line', 'Agricultural Land (% of land area)', 'Years',
      'Percentage(%)')
+plt.savefig("agriculture.png")
+
+# Calling the function to generate heatmap and providing the indicators
+data = pd.read_csv("API_19_DS2_en_csv_v2_5361599.csv", skiprows=4)
+x = ["Forest area (% of land area)", "Arable land (% of land area)",
+     "Population, total", "Agricultural land (% of land area)"]
+years = ["2000", "2005", "2010", "2015", "2020"]
+
+a = heatdata(data, 'Country Name', 'Canada', years, x)
+heat_map(a, 'Canada')
