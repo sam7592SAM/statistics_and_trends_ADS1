@@ -37,7 +37,6 @@ def des_fun(data):
     value distribution. .corr() method is used to check the pairwise
     correlation of columns'''
     print(data.describe())
-    # print(data.corr())
     return
 
 
@@ -71,6 +70,11 @@ def plot(data, kind, title, x, y):
 
 
 def heatdata(data, column, value, year, indi_cators):
+    """ Function heatdata to set values to the heatmap. Arguements such as
+    data, column, value, year and indi_cators are provided where data is to
+    read CSV file, Column to give country name, value to provide which data
+    to be shown, year to provide the years needed to generate and indi_cators
+    arevalues for providing indicator name"""
     df3 = data.groupby(column, group_keys=True)
     df3 = df3.get_group(value)
     df3 = df3.reset_index()
@@ -84,11 +88,17 @@ def heatdata(data, column, value, year, indi_cators):
 
 
 def heat_map(data, country):
+    """Function to generate an heatmap. This function is used to give a glance
+    of the dataframe, that is, simplifying from complex values. Arguements such
+    as data and country are provided where data is to read CSV file and country
+    to generate the heatmap from a particular country."""
     plt.figure(figsize=(10, 7))
     heatmap = sns.heatmap(data.corr(), annot=True, cmap="YlGnBu")
     heatmap.set_title(country)
 
+
 # Specifying the values to be taken from the datasets.
+
 
 country_list = [19, 41, 83, 72, 257]
 year = [43, 48, 53, 58, 63]
@@ -130,6 +140,10 @@ des_fun(agrlnd_2)
 
 stat_fun(forest_2)
 
+# Reading the values of stat_fun to a CSV file
+
+forest_2.to_csv("statval.csv")
+
 # Plotting graphs for various dataframes using plot() and specifying arguements
 
 plot(forest_2, 'bar', 'Forest Area (% of land area)', 'Years', 'Percentage(%)')
@@ -143,10 +157,12 @@ plot(agrlnd_2, 'line', 'Agricultural Land (% of land area)', 'Years',
 plt.savefig("agriculture.png")
 
 # Calling the function to generate heatmap and providing the indicators
+
 data = pd.read_csv("API_19_DS2_en_csv_v2_5361599.csv", skiprows=4)
 x = ["Forest area (% of land area)", "Arable land (% of land area)",
      "Population, total", "Agricultural land (% of land area)"]
 years = ["2000", "2005", "2010", "2015", "2020"]
 
-a = heatdata(data, 'Country Name', 'Canada', years, x)
-heat_map(a, 'Canada')
+a = heatdata(data, 'Country Name', 'Australia', years, x)
+heat_map(a, 'Australia')
+plt.savefig("heatmap.png")
